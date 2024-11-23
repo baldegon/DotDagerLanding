@@ -1,0 +1,44 @@
+---
+---
+
+<section class="landing-section bg-black h-screen w-screen text-center overflow-hidden relative" data-header-color="white">
+    <div class="z-30 relative flex flex-col box-border shadow-zinc-700">
+        <header>
+            <h2 class="text-orange-400 italic border-sm pt-40 text-5xl font-sans font-large">
+                Que bajas? PORQUE BAJAS?
+            </h2>
+            <span class="font-sans text-lg text-red-600 text-base">
+                <strong>NO BAJES QUE ESTOY EN BOLAS</strong>
+            </span>
+        </header>
+    </div>
+        
+    <div class="absolute top-0 bottom-0 h-full w-full">
+        <div class="image-container h-full w-full">
+            <img 
+                class="brightness-100 h-full w-full object-cover" 
+                src="/pelotas.png" 
+                alt="pelotasdedager"
+            >
+        </div>
+    </div>
+</section>
+
+<style>
+    .image-container {
+        animation: zoomCenter 15s ease-in-out infinite;
+        transform-origin: center center;
+    }
+
+    @keyframes zoomCenter {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.5);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>

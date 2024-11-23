@@ -1,0 +1,138 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BackgroundMusic from '../components/BackgroundMusic.astro';
+
+const backgroundImages = [
+    "/barba.png",
+    "/pelotas.png",
+    "/chatcgt.jpg",
+    "/droguita.jpg",
+    "/te coje.jpg",
+    "/q pesado.jpg",
+    "/lindoback.jpg",
+    "/coquita.jpg",
+    "/omg lol.jpg",
+];
+---
+
+<Layout title="Game Section">
+    <nav class="sticky py-4 px-4">
+        <button class="ml- align-center items-center">
+            VOLVER AL MENU
+        </button>
+    </nav>
+    <BackgroundMusic audioSource="/public/y2mate.com - El grandote.mp3" initialVolume={0.3} />
+    
+    <section class="relative w-screen h-screen overflow-hidden">
+        <!-- Background Images -->
+        <div class="absolute inset-0 z-0">
+            {backgroundImages.map((img, index) => (
+                <div class={`background-slide absolute inset-0 ${index === 0 ? 'active' : ''}`}>
+                    <img 
+                        class="brightness-50 h-full w-full object-cover object-center" 
+                        src={img} 
+                        alt={`Background ${index + 1}`}
+                    />
+                </div>
+            ))}
+        </div>
+        
+        <!-- Iframe Container with Animation -->
+        <div class="game-container relative z-10 w-[600px] h-[600px] mx-auto">
+            <iframe 
+                class="absolute w-full h-full rounded-lg shadow-2xl"
+                src="https://tbot.xyz/lumber/"
+            ></iframe>
+        </div>
+    </section>
+</Layout>
+
+<script>
+    function setupBackgroundSlider() {
+        const slides = document.querySelectorAll('.background-slide');
+        let currentSlide = 0;
+
+        function showSlide(index: number) {
+            slides.forEach((slide) => {
+                slide.classList.remove('active', 'fade-out');
+            });
+            slides[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            const current = slides[currentSlide];
+            current.classList.add('fade-out');
+            
+            currentSlide = (currentSlide + 1) % slides.length;
+            setTimeout(() => {
+                showSlide(currentSlide);
+            }, 1000);
+        }
+
+        setInterval(nextSlide, 2000);
+    }
+
+    // Ejecutar cuando el DOM esté listo
+    document.addEventListener('astro:page-load', setupBackgroundSlider);
+    // También ejecutar en la carga inicial
+    setupBackgroundSlider();
+</script>
+
+<style>
+    .background-slide {
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        will-change: opacity;
+    }
+
+    .background-slide.active {
+        opacity: 1;
+    }
+
+    .background-slide.fade-out {
+        opacity: 0;
+    }
+
+    .background-slide.active img {
+        animation: slowZoom 2s ease-in-out infinite;
+    }
+
+    .game-container {
+        animation: moveAround 20s ease-in-out infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @keyframes slowZoom {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    @keyframes moveAround {
+        0% {
+            transform: translate(-50%, -50%);
+        }
+        25% {
+            transform: translate(-30%, -30%);
+        }
+        50% {
+            transform: translate(-70%, -50%);
+        }
+        75% {
+            transform: translate(-50%, -70%);
+        }
+        100% {
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    section {
+        background-color: #000;
+    }
+</style>

@@ -1,0 +1,119 @@
+---
+interface Props {
+    audioSource: string;
+    initialVolume?: number;
+}
+
+const { audioSource, initialVolume = 0.5 } = Astro.props;
+---
+
+<div class="fixed bottom-4 right-4 z-50 bg-black/50 rounded-lg p-2 backdrop-blur-sm">
+    <audio id="bgMusic" preload="auto">
+        <source src={audioSource} type="audio/mpeg">
+    </audio>
+    <div class="flex items-center gap-2">
+        <button id="toggleMusic" class="text-white hover:text-yellow-400 transition-colors p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+            </svg>
+        </button>
+        <input 
+            type="range" 
+            id="volumeControl" 
+            min="0" 
+            max="1" 
+            step="0.1" 
+            value={initialVolume}
+            class="w-20 accent-yellow-400"
+        >
+    </div>
+</div>
+
+<script>
+    class AudioController {
+        private audio: HTMLAudioElement;
+        private toggleButton: HTMLElement;
+        private volumeControl: HTMLInputElement;
+        private isInitialized: boolean = false;
+
+        constructor() {
+            this.audio = document.getElementById('bgMusic') as HTMLAudioElement;
+            this.toggleButton = document.getElementById('toggleMusic') as HTMLElement;
+            this.volumeControl = document.getElementById('volumeControl') as HTMLInputElement;
+            
+            if (this.audio && this.toggleButton && this.volumeControl) {
+                this.initializeAudio();
+                this.setupEventListeners();
+            }
+        }
+
+        private initializeAudio() {
+            this.audio.loop = true;
+            this.audio.volume = parseFloat(this.volumeControl.value);
+        }
+
+        private setupEventListeners() {
+            // Setup click handler for the play button
+            this.toggleButton.addEventListener('click', () => this.togglePlay());
+
+            // Setup volume control
+            this.volumeControl.addEventListener('input', (e) => {
+                const target = e.target as HTMLInputElement;
+                this.audio.volume = parseFloat(target.value);
+            });
+
+            // Setup interaction handler for autoplay
+            document.addEventListener('click', () => this.handleFirstInteraction(), { once: true });
+        }
+
+        private handleFirstInteraction() {
+            if (!this.isInitialized) {
+                this.isInitialized = true;
+                this.togglePlay();
+            }
+        }
+
+        private togglePlay() {
+            if (this.audio.paused) {
+                this.audio.play()
+                    .then(() => this.updatePlayButton(true))
+                    .catch(error => console.error('Error playing audio:', error));
+            } else {
+                this.audio.pause();
+                this.updatePlayButton(false);
+            }
+        }
+
+        private updatePlayButton(isPlaying: boolean) {
+            this.toggleButton.innerHTML = isPlaying ? `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M5 12h3l3-3v6l-3-3H5z"/>
+                </svg>
+            ` : `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                </svg>
+            `;
+        }
+    }
+
+    // Initialize the audio controller when the page loads
+    document.addEventListener('astro:page-load', () => {
+        new AudioController();
+    });
+
+    // Also initialize on the first load
+    new AudioController();
+</script>
+
+<style>
+    input[type="range"] {
+        cursor: pointer;
+    }
+    
+    button {
+        cursor: pointer;
+    }
+</style>

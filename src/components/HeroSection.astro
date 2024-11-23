@@ -1,0 +1,114 @@
+---
+import ViewTransitions from 'astro/components/ViewTransitions.astro';
+
+const backgroundImages = [
+    "/barba.png",
+    "/pelotas.png",
+    "/chatcgt.jpg",
+    "/droguita.jpg"
+    // Agrega aquí más imágenes si las tienes
+];
+---
+
+<section class="landing-section bg-black h-screen w-screen text-center overflow-hidden relative" data-header-color="white">
+    <div class="z-30 relative h-full flex flex-col">
+        <header>
+            <h2 class="font-sans shadow-sm p-25 italic text-teal-500 pt-40 text-6xl font-large">
+                Dot Dager
+            </h2>
+            <p class="py-4 font-sans italic text-teal-500 transition-colors font-medium ml-1">
+                Pepinos, Gatitos y ... Codigo
+            </p>
+            <span class="font-sans italic text-white transition-colors font-medium ml-1">
+                AAAAA
+                <br>
+                Soy Mariano Villa, Mas conocido como Dot Dager. Hago <del>PORNO</del> <i>Videos</i> sobre Programacion en Youtube 
+                <br>
+                y Streams Realizando Proyectos para que los <i><del>BURRASOS</del></i> newbies aprendan como es un Verdadero Programador
+            </span>
+        </header>
+        
+        <footer class="flex flex-col flex-grow justify-end pb-20">
+            <div>
+                <a class="border-[3px] border-white bg-white/5 backdrop-blur-sm text-sm rounded font-medium text-white px-12 py-2 inline-block hover:bg-white hover:text-black transition-colors" href="/lumber">
+                    Clickea <del>Pichoncito de Bootcamp</del>
+                    <ViewTransitions />
+                </a>
+            </div>
+        </footer>
+    </div>
+        
+    <div class="absolute top-0 bottom-0 h-full w-full">
+        {backgroundImages.map((img, index) => (
+            <div class={`background-slide absolute inset-0 ${index === 0 ? 'active' : ''}`}>
+                <img 
+                    class="brightness-50 h-full w-full object-cover" 
+                    src={img} 
+                    alt={`Background ${index + 1}`}
+                />
+            </div>
+        ))}
+    </div>
+</section>
+
+<script>
+    function setupBackgroundSlider() {
+        const slides = document.querySelectorAll('.background-slide');
+        let currentSlide = 0;
+
+        function showSlide(index: number) {
+            slides.forEach((slide) => {
+                slide.classList.remove('active', 'fade-out');
+            });
+            slides[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            const current = slides[currentSlide];
+            current.classList.add('fade-out');
+            
+            currentSlide = (currentSlide + 1) % slides.length;
+            setTimeout(() => {
+                showSlide(currentSlide);
+            }, 1000); // Coincide con la duración de la transición
+        }
+
+        // Iniciar el carrusel
+        setInterval(nextSlide, 5000); // Cambiar imagen cada 5 segundos
+    }
+
+    // Ejecutar cuando el DOM esté listo
+    document.addEventListener('astro:page-load', setupBackgroundSlider);
+    // También ejecutar en la carga inicial
+    setupBackgroundSlider();
+</script>
+
+<style>
+    .background-slide {
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        will-change: opacity;
+    }
+
+    .background-slide.active {
+        opacity: 1;
+    }
+
+    .background-slide.fade-out {
+        opacity: 0;
+    }
+
+    /* Añadir efecto de zoom suave a las imágenes activas */
+    .background-slide.active img {
+        animation: slowZoom 5s ease-in-out infinite;
+    }
+
+    @keyframes slowZoom {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+</style>
